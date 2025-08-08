@@ -1,4 +1,4 @@
-// file: org/yumu/wand_craft/wand_craft_mod/item/Wand.java
+// org/yumu/wand_craft/wand_craft_mod/item/Wand.java
 package org.yumu.wand_craft.wand_craft_mod.item;
 
 import net.minecraft.network.chat.Component;
@@ -21,6 +21,7 @@ public class Wand extends Item {
             // 获取玩家的魔法数据
             MagicData magicData = MagicData.getPlayerMagicData(player);
             float currentMana = magicData.getMana();
+            magicData.addMana(-5);
 
             // 向玩家发送当前 mana 值的消息
             player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));

@@ -1,3 +1,4 @@
+// org/yumu/wand_craft/wand_craft_mod/capability/MagicManager.java
 package org.yumu.wand_craft.wand_craft_mod.capability;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -12,19 +13,22 @@ public class MagicManager {
     //法力值恢复周期
     public static int MANA_RECOVERY_TICKS = 10;
 
-    public boolean regenPlayerMana(ServerPlayer  serverPlayer,MagicData playerMagicData){
-        float playerMaxMana=(float)serverPlayer.getAttributeValue(MAX_MANA);
+    public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData){
+        float playerMaxMana = (float)serverPlayer.getAttributeValue(MAX_MANA);
         float mana = playerMagicData.getMana();
-        if(mana!=playerMaxMana){
-            float playerManaRegenNum=(float)serverPlayer.getAttributeValue(MANA_REGEN_NUM);
-            playerMagicData.setMana(Mth.clamp(playerMagicData.getMana()+playerManaRegenNum,0,playerMaxMana));
-            return true;
-        }else {
-            return false;
+        if(mana != playerMaxMana){
+            float playerManaRegenNum = (float)serverPlayer.getAttributeValue(MANA_REGEN_NUM);
+            float newMana = Mth.clamp(playerMagicData.getMana() + playerManaRegenNum, 0, playerMaxMana);
+            if (newMana != mana) {
+                playerMagicData.setMana(newMana);
+                return true;
+            }
         }
+        return false;
     }
+
     public void tick(Level level){
-        boolean shouldManaRegen=level.getServer().getTickCount()%MANA_RECOVERY_TICKS==0;
+        boolean shouldManaRegen = level.getServer().getTickCount() % MANA_RECOVERY_TICKS == 0;
         level.players().stream().toList().forEach(player -> {
             if(player instanceof ServerPlayer serverPlayer){
                 MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
@@ -32,12 +36,9 @@ public class MagicManager {
                 * 每一个游戏刻的逻辑
                 * */
                 if(shouldManaRegen){//法力值恢复
-                    if(regenPlayerMana(serverPlayer,playerMagicData)){
-
-                    }
+                    regenPlayerMana(serverPlayer, playerMagicData);
                 }
             }
         });
     }
-
 }
