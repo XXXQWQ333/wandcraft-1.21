@@ -5,7 +5,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
@@ -26,7 +25,7 @@ public class CreativeTabRegistry {
                     .displayItems((parameters, output) -> {
                         output.accept(ItemRegistry.EXAMPLE_ITEM.get());
                         output.accept(ItemRegistry.EXAMPLE_BLOCK_ITEM.get());
+                        output.accept(ItemRegistry.WAND.get());
                     }).build());
 
 }
-

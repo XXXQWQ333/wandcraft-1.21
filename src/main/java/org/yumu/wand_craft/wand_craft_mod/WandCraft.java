@@ -18,9 +18,8 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import org.yumu.wand_craft.wand_craft_mod.registries.BlockRegistry;
-import org.yumu.wand_craft.wand_craft_mod.registries.CreativeTabRegistry;
-import org.yumu.wand_craft.wand_craft_mod.registries.ItemRegistry;
+import org.yumu.wand_craft.wand_craft_mod.capability.MagicManager;
+import org.yumu.wand_craft.wand_craft_mod.registries.*;
 
 // 这里的值应该与 META-INF/neoforge.mods.toml 文件中的条目匹配
 @Mod(WandCraft.MODID)
@@ -30,18 +29,24 @@ public class WandCraft {
     // 直接引用slf4j日志记录器
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static MagicManager MAGIC_MANAGER;
+
 
     // 模组类的构造函数是模组加载时运行的第一段代码。
     // FML将识别一些参数类型如IEventBus或ModContainer并自动传入它们。
     public WandCraft(IEventBus modEventBus, ModContainer modContainer) {
 
+        MAGIC_MANAGER=new MagicManager();
         // 注册commonSetup方法用于模组加载
         modEventBus.addListener(this::commonSetup);
 
         // 注册所有内容
+        DataAttachmentRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
+        AttributeRegistry.register(modEventBus);
+        EventRegistry.setup();
 
 
 
