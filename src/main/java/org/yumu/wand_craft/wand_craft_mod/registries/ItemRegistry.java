@@ -12,6 +12,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.item.Wand;
 
+import static org.yumu.wand_craft.wand_craft_mod.registries.BlockRegistry.ARCANE_ENGRAVER_BLOCK;
+
 public class ItemRegistry {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, WandCraft.MODID);
     public static void register(IEventBus eventBus) {
@@ -27,4 +29,8 @@ public class ItemRegistry {
 
     // 注册魔杖物品
     public static final DeferredHolder<Item, Item> WAND = ITEMS.register("wand", () -> new Wand(new Item.Properties().stacksTo(1)));
+    // Arcane Engraver Block Item
+    public static final DeferredHolder<Item, BlockItem> ARCANE_ENGRAVER_BLOCK_ITEM = ITEMS.register("arcane_engraver",
+            () -> new BlockItem(ARCANE_ENGRAVER_BLOCK.get(), new Item.Properties()));
+
 }

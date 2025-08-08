@@ -47,6 +47,8 @@ public class WandCraft {
         CreativeTabRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         EventRegistry.setup();
+        MenuRegistry.register(modEventBus);
+
 
 
 
