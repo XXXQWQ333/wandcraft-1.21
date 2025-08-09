@@ -1,5 +1,8 @@
 {
   "itemGroup.wandcraft": "Example Mod Tab",
   "block.wandcraft.example_block": "Example Block",
-  "item.wandcraft.example_item": "Example Item"
+  "item.wandcraft.example_item": "Example Item",
+  "item.wandcraft.wand": "Magic Wand",
+  "wandcraft.wand.spell_slots": "Spell Slots: %s",
+  "block.wandcraft.arcane_engraver": "Arcane Engraver"
 }

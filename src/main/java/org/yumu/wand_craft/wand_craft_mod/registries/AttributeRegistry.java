@@ -17,6 +17,7 @@ public class AttributeRegistry {
     public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);
     }
+
     public static final DeferredHolder<Attribute, Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", ()->new MagicRangedAttribute("attribute.wand_craft.max_mana",100.0D,0.0D,1000.0D).setSyncable(true));
     public static final DeferredHolder<Attribute, Attribute> MANA_REGEN_NUM = ATTRIBUTES.register("mana_regen_num", ()->new MagicRangedAttribute("attribute.wand_craft.mana_regen_num",5.0D,0.0D,100.0D).setSyncable(true));
 

@@ -48,7 +48,7 @@ public class WandCraft {
         AttributeRegistry.register(modEventBus);
         EventRegistry.setup();
         MenuRegistry.register(modEventBus);
-
+        ComponentRegistry.register(modEventBus);
 
 
 

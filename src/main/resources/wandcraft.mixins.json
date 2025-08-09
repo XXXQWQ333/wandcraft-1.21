@@ -2,7 +2,9 @@
   "required": true,
   "package": "org.yumu.wand_craft.wand_craft_mod.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "ItemStackMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
