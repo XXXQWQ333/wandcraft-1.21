@@ -12,6 +12,7 @@ import org.yumu.wand_craft.wand_craft_mod.capability.PlayerMagicProvider;
 
 /**
  * 数据附件注册类，用于注册和管理游戏中的数据附件类型
+ * 注册的是数据附件(Attachment Types)，这些附件可以附加到各种游戏对象上（如实体、方块等）
  */
 public class DataAttachmentRegistry {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, WandCraft.MODID);

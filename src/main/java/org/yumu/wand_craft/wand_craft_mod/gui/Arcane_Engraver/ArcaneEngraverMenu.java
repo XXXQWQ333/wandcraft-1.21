@@ -14,8 +14,10 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.yumu.wand_craft.wand_craft_mod.block.Arcane_Engraver.ArcaneEngraverBlock;
 import org.yumu.wand_craft.wand_craft_mod.block.Arcane_Engraver.ArcaneEngraverBlockEntity;
+import org.yumu.wand_craft.wand_craft_mod.item.SpellCore;
 import org.yumu.wand_craft.wand_craft_mod.item.Wand;
 import org.yumu.wand_craft.wand_craft_mod.registries.BlockRegistry;
+import org.yumu.wand_craft.wand_craft_mod.registries.ItemRegistry;
 import org.yumu.wand_craft.wand_craft_mod.registries.MenuRegistry;
 
 /**
@@ -83,7 +85,14 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
 
             // 法术槽位 (9个槽位)，保持横向排列但位置更合理
             for (int i = 0; i < 9; i++) {
-                this.addSlot(new Slot(blockEntity, i + 1, 8 + i * 18, 48));
+                final int slotIndex = i + 1;
+                this.addSlot(new Slot(blockEntity, slotIndex, 8 + i * 18, 48) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        // 只允许放入法术核心物品
+                        return stack.getItem() instanceof SpellCore || stack.is(ItemRegistry.SPELL_CORE.get());
+                    }
+                });
             }
 
             // 添加打印按钮槽位 (虚拟槽位)，放在底部中央位置
@@ -114,7 +123,7 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
         // 创建一个简单的虚拟容器
         SimpleContainer dummyContainer = new SimpleContainer(11); // 增加一个槽位用于按钮
 
-        // 法杖槽位，放在顶部中央位置，更加突出
+        // 法杖槽位，放在顶部中央位置
         this.addSlot(new Slot(dummyContainer, 0, 80, 20) {
             @Override
             public boolean mayPlace(ItemStack stack) {
@@ -122,9 +131,15 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
             }
         });
 
-        // 法术槽位 (9个槽位)，保持横向排列但位置更合理
+        // 法术槽位 (9个槽位)
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(dummyContainer, i + 1, 8 + i * 18, 48));
+            this.addSlot(new Slot(dummyContainer, i + 1, 8 + i * 18, 48) {
+                @Override
+                public boolean mayPlace(ItemStack stack) {
+                    // 只允许放入法术核心物品
+                    return stack.getItem() instanceof SpellCore || stack.is(ItemRegistry.SPELL_CORE.get());
+                }
+            });
         }
 
         // 添加打印按钮槽位 (虚拟槽位)，放在底部中央位置
@@ -195,16 +210,16 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
                 if (slotItem.getItem() instanceof Wand) {
                     // 尝试放入法杖槽位 (索引36)
                     if (!this.moveItemStackTo(slotItem, 36, 37, false)) {
-                        // 如果法杖槽位已满，放入法术槽位 (索引37-45)
-                        if (!this.moveItemStackTo(slotItem, 37, 46, false)) {
-                            return ItemStack.EMPTY;
-                        }
+                        return ItemStack.EMPTY;
                     }
-                } else {
-                    // 非法杖物品只能放入法术槽位 (索引37-45)
+                } else if (slotItem.getItem() instanceof SpellCore || slotItem.is(ItemRegistry.SPELL_CORE.get())) {
+                    // 尝试放入法术槽位 (索引37-45)
                     if (!this.moveItemStackTo(slotItem, 37, 46, false)) {
                         return ItemStack.EMPTY;
                     }
+                } else {
+                    // 非法杖和非法术核心物品不能放入
+                    return ItemStack.EMPTY;
                 }
             } else if (index < 46) { // 物品槽位范围 (排除按钮槽位)
                 // 如果是从方块GUI移动到玩家物品栏 (索引0-35)

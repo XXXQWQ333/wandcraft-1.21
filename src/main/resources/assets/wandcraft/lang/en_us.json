@@ -1,8 +1,11 @@
 {
   "itemGroup.wandcraft": "Example Mod Tab",
+  "itemGroup.wandcraft.spell_cores": "Spell Cores",
   "block.wandcraft.example_block": "Example Block",
   "item.wandcraft.example_item": "Example Item",
   "item.wandcraft.wand": "Magic Wand",
   "wandcraft.wand.spell_slots": "Spell Slots: %s",
-  "block.wandcraft.arcane_engraver": "Arcane Engraver"
+  "block.wandcraft.arcane_engraver": "Arcane Engraver",
+  "spell.wandcraft.fireball": "Fireball Spell",
+  "spell.wandcraft.speed_enhancement": "Speed Enhancement Spell"
 }

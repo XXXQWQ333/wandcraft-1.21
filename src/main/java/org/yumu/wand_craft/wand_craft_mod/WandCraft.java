@@ -1,3 +1,4 @@
+// org/yumu/wand_craft/wand_craft_mod/WandCraft.java
 package org.yumu.wand_craft.wand_craft_mod;
 
 import org.slf4j.Logger;
@@ -36,29 +37,27 @@ public class WandCraft {
     // FML将识别一些参数类型如IEventBus或ModContainer并自动传入它们。
     public WandCraft(IEventBus modEventBus, ModContainer modContainer) {
 
+        EventRegistry.setup();
         MAGIC_MANAGER=new MagicManager();
         // 注册commonSetup方法用于模组加载
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(SpellRegistry::registerRegistry);
 
-        // 注册所有内容
+        // 注册所有内容 - 注意注册顺序
+        SpellRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
-        EventRegistry.setup();
+
         MenuRegistry.register(modEventBus);
         ComponentRegistry.register(modEventBus);
-
-
 
         // 为我们自己注册服务器和其他我们感兴趣的事件。
         // 注意，只有当我们希望这个类(WandCraft)直接响应事件时才需要这行代码。
         // 如果此类中没有用@SubscribeEvent注解的函数(如下方的onServerStarting())，则不要添加这行代码。
         NeoForge.EVENT_BUS.register(this);
-
-        // 注册物品到创造模式标签页
-//        modEventBus.addListener(this::addCreative);
 
         // 注册我们模组的ModConfigSpec，以便FML可以为我们创建和加载配置文件
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -76,13 +75,6 @@ public class WandCraft {
 
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
-
-    // 将示例方块物品添加到建筑方块标签页
-//    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-//            event.accept(EXAMPLE_BLOCK_ITEM);
-//        }
-//    }
 
     // 你可以使用SubscribeEvent让事件总线发现要调用的方法
     @SubscribeEvent

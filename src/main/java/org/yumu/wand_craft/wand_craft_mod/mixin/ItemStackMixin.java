@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.yumu.wand_craft.wand_craft_mod.WandCraft;
+
 import org.yumu.wand_craft.wand_craft_mod.item.Wand;
 
 @Mixin(ItemStack.class)
