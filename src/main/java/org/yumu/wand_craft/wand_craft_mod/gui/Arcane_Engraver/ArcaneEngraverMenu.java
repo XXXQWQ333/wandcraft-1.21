@@ -239,7 +239,7 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
         if (player instanceof ServerPlayer) {
             super.removed(player);
             this.access.execute((p_39796_, p_39797_) -> {
-                this.clearContainer(player, this.spellContainer);
+//                this.clearContainer(player, this.spellContainer);
                 this.clearContainer(player, this.wandContainer);
             });
         }
