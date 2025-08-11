@@ -46,8 +46,8 @@ public class WandCraft {
         // 注册所有内容 - 注意注册顺序
         SpellRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
-        ItemRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
+        ItemRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
 

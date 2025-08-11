@@ -15,9 +15,7 @@ import org.yumu.wand_craft.wand_craft_mod.api.MagicData;
 public class PlayerMagicProvider implements IAttachmentSerializer<CompoundTag, MagicData> {
     /**
      * 从给定的附件持有者和 NBT 标签中读取并构建 MagicData 实例。
-     *
-     * @param holder   附件持有者，通常是一个实体（如 ServerPlayer）。
-     * @param tag      包含魔法数据的 NBT 标签。
+
      * @param provider 用于查找数据的 HolderLookup.Provider。
      * @return 构建好的 MagicData 实例。
      */

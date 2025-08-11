@@ -55,6 +55,10 @@ public abstract class AbstractSpell {
         return spellName;
     }
 
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
     public int getCostCastCount() {
         return costCastCount;
     }

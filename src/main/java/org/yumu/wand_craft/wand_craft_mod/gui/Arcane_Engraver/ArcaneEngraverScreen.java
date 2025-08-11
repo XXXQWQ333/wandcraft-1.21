@@ -8,39 +8,44 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-
+import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 /**
- * 神秘雕刻器GUI屏幕类，用于渲染和处理与雕刻器菜单的交互。
- * 该类继承自AbstractContainerScreen，提供图形界面的绘制、鼠标点击处理和提示信息显示功能。
+ * ArcaneEngraverScreen 是一个用于显示和交互奥术雕刻器GUI的屏幕类。
+ * 它继承自 Minecraft 的 AbstractContainerScreen，用于渲染和处理与奥术雕刻器菜单相关的图形界面。
+ *
+ *  menu 奥术雕刻器的菜单实例，用于管理物品槽和交互逻辑
+ *  playerInventory 玩家的物品栏实例
+ *  title 屏幕标题文本组件
  */
 public class ArcaneEngraverScreen extends AbstractContainerScreen<ArcaneEngraverMenu> {
+
     private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("wandcraft", "textures/gui/arcane_engraver.png");
 
-    // 在类中添加按钮位置常量 (现在按钮在(80, 76)位置)
-    private static final int BUTTON_X = 80;
-    private static final int BUTTON_Y = 76;
+//    private static final int BUTTON_X = 80;
+//    private static final int BUTTON_Y = 76;
 
     /**
-     * 构造函数，初始化神秘雕刻器屏幕的基本属性。
+     * 构造函数，初始化屏幕的基本属性。
      *
-     * @param menu           与屏幕关联的菜单对象
+     * @param menu 奥术雕刻器菜单对象
      * @param playerInventory 玩家物品栏对象
-     * @param title          屏幕标题组件
+     * @param title 屏幕标题
      */
     public ArcaneEngraverScreen(ArcaneEngraverMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 176;
-        this.imageHeight = 182; // 调整高度以适应新布局
+        this.imageHeight = 182;
     }
 
     /**
      * 渲染背景纹理和按钮文本。
      *
-     * @param guiGraphics GUI图形绘制上下文
-     * @param partialTick 部分tick时间（用于动画插值）
-     * @param mouseX      鼠标X坐标
-     * @param mouseY      鼠标Y坐标
+     * @param guiGraphics 用于绘制图形的上下文对象
+     * @param partialTick 部分tick时间，用于动画插值
+     * @param mouseX 鼠标X坐标
+     * @param mouseY 鼠标Y坐标
      */
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
@@ -52,84 +57,83 @@ public class ArcaneEngraverScreen extends AbstractContainerScreen<ArcaneEngraver
         int y = (this.height - this.imageHeight) / 2;
 
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight);
-
-        // 绘制打印按钮文本，位置调整以适应新布局
-        guiGraphics.drawString(this.font, "Print", x + BUTTON_X - 10, y + BUTTON_Y + 6, 0xFFFFFF);
     }
 
     /**
-     * 渲染整个屏幕内容，包括背景、控件和悬停提示。
+     * 渲染整个屏幕内容，包括背景、控件和提示信息。
+     * 当鼠标悬停在“Print”按钮上时，显示提示信息。
      *
-     * @param guiGraphics GUI图形绘制上下文
-     * @param mouseX      鼠标X坐标
-     * @param mouseY      鼠标Y坐标
-     * @param partialTick 部分tick时间（用于动画插值）
+     * @param guiGraphics 用于绘制图形的上下文对象
+     * @param mouseX 鼠标X坐标
+     * @param mouseY 鼠标Y坐标
+     * @param partialTick 部分tick时间，用于动画插值
      */
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // 渲染按钮悬停提示 (更新检测区域以匹配新按钮位置)
-        int guiLeft = (this.width - this.imageWidth) / 2;
-        int guiTop = (this.height - this.imageHeight) / 2;
-
-        // 更新按钮检测区域，使其更精确地匹配按钮位置
-        if (mouseX >= guiLeft + BUTTON_X - 8 && mouseX < guiLeft + BUTTON_X + 10 &&
-            mouseY >= guiTop + BUTTON_Y + 2 && mouseY < guiTop + BUTTON_Y + 18) {
-            guiGraphics.renderTooltip(this.font, Component.literal("Print contents"), mouseX, mouseY);
-        }
+//        int guiLeft = (this.width - this.imageWidth) / 2;
+//        int guiTop = (this.height - this.imageHeight) / 2;
+//
+//        // 检查鼠标是否悬停在“Print”按钮区域
+//        if (mouseX >= guiLeft + BUTTON_X - 8 && mouseX < guiLeft + BUTTON_X + 10 &&
+//            mouseY >= guiTop + BUTTON_Y + 2 && mouseY < guiTop + BUTTON_Y + 18) {
+//            guiGraphics.renderTooltip(this.font, Component.literal("Print contents"), mouseX, mouseY);
+//        }
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     /**
-     * 处理鼠标点击事件，检测是否点击了打印按钮。
+     * 处理鼠标点击事件。
+     * 如果点击的是“Print”按钮，则调用打印容器内容的方法。
      *
      * @param mouseX 鼠标X坐标
      * @param mouseY 鼠标Y坐标
-     * @param button 被点击的鼠标按键编号
-     * @return 如果事件被处理则返回true，否则返回false
+     * @param button 鼠标按键编号（0为左键，1为右键等）
+     * @return 如果事件被处理则返回true，否则返回父类处理结果
      */
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        int guiLeft = (this.width - this.imageWidth) / 2;
-        int guiTop = (this.height - this.imageHeight) / 2;
-
-        // 检查是否点击了打印按钮 (更新检测区域以匹配新按钮位置)
-        if (mouseX >= guiLeft + BUTTON_X - 8 && mouseX < guiLeft + BUTTON_X + 10 &&
-            mouseY >= guiTop + BUTTON_Y + 2 && mouseY < guiTop + BUTTON_Y + 18) {
-            // 在客户端直接打印容器内容
-            printContainerContents();
-            return true;
-        }
-
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
+//    @Override
+//    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//        int guiLeft = (this.width - this.imageWidth) / 2;
+//        int guiTop = (this.height - this.imageHeight) / 2;
+//
+//        // 判断点击是否发生在“Print”按钮区域
+//        if (mouseX >= guiLeft + BUTTON_X - 8 && mouseX < guiLeft + BUTTON_X + 10 &&
+//            mouseY >= guiTop + BUTTON_Y + 2 && mouseY < guiTop + BUTTON_Y + 18) {
+//            printContainerContents();
+//            return true;
+//        }
+//
+//        return super.mouseClicked(mouseX, mouseY, button);
+//    }
 
     /**
-     * 在客户端打印容器内容
+     * 打印当前容器中所有槽位的内容到聊天栏。
+     * 包括主 wand 槽和9个 spell 槽的信息。
      */
     private void printContainerContents() {
-        // 发送标题
+
+        WandCraft.LOGGER.info("isClientSide:"+minecraft.player.level().isClientSide());
+
         minecraft.player.sendSystemMessage(Component.literal("=== Arcane Engraver Contents ==="));
 
-        // 打印法杖槽位 (索引0)
-        ItemStack wandStack = menu.getSlot(0).getItem();
+        ItemStack wandStack = menu.getWandSlot().getItem();
         Component wandInfo = wandStack.isEmpty() ?
                 Component.literal("Wand slot: Empty") :
                 Component.literal("Wand slot: " + wandStack.getDisplayName().getString() + " x" + wandStack.getCount());
         minecraft.player.sendSystemMessage(wandInfo);
 
-        // 打印法术槽位 (索引1-9)
         minecraft.player.sendSystemMessage(Component.literal("Spell slots:"));
 
         for (int i = 1; i < 10; i++) {
-            ItemStack stack = menu.getSlot(i).getItem();
+            ItemStack stack = menu.getSpellSlots().get(i).getItem();
             if (!stack.isEmpty()) {
                 Component slotInfo = Component.literal("  Slot " + i + ": " + stack.getDisplayName().getString() + " x" + stack.getCount());
                 minecraft.player.sendSystemMessage(slotInfo);
             }
         }
+
     }
 }

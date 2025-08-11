@@ -13,6 +13,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 import java.util.List;
 
 public class SpellCore extends Item {
+
     public SpellCore(Properties properties) {
         super(new Item.Properties().rarity(Rarity.UNCOMMON));
     }
@@ -26,9 +27,12 @@ public class SpellCore extends Item {
         }
     }
 
+
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
 
         SpellData spellData = getSpellDataFromItemStack(stack);
         AbstractSpell spell = spellData.getSpell();

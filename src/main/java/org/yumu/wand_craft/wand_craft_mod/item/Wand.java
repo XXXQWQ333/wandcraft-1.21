@@ -12,8 +12,11 @@ import net.minecraft.world.level.Level;
 import org.yumu.wand_craft.wand_craft_mod.api.MagicData;
 import org.yumu.wand_craft.wand_craft_mod.api.WandData;
 import org.yumu.wand_craft.wand_craft_mod.registries.ComponentRegistry;
+import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
+import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 import org.yumu.wand_craft.wand_craft_mod.util.SpellResolver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Wand extends Item {
@@ -54,11 +57,14 @@ public class Wand extends Item {
                 WandData wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
 
                 // 如果法杖未初始化，则进行初始化
-                if (wandData == null) {
-
+                if (wandData == null || !wandData.isInitialized()) {
                     // 创建新的法杖数据
                     wandData = new WandData();
                     wandData.recast();
+                    // 确保 spellIds 被正确初始化
+                    if (wandData.getSpellIds() == null) {
+                        wandData.setSpellIds(new ArrayList<>());
+                    }
                     // 将数据附加到物品上
                     stack.set(ComponentRegistry.WAND_COMPONENT.get(), wandData);
                     // 向玩家发送消息
@@ -71,14 +77,31 @@ public class Wand extends Item {
             float currentMana = magicData.getMana();
             magicData.addMana(-5);
 
-            // 向玩家发送当前 mana 值的消息
-            player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));
+            WandData wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
+            if (wandData != null) {
+                List<AbstractSpell> spells = new ArrayList<>();
+                if (wandData.getSpellIds() != null) {
+                    wandData.getSpellIds().stream().forEach(spellId -> {
+                        if (spellId != null) {
+                            spells.add(SpellRegistry.getSpell(spellId));
+                        }
+                    });
+                }
+
+                // 向玩家发送当前 mana 值的消息
+                player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));
+                player.sendSystemMessage(Component.literal("当前存储的魔法: " + spells));
+            }
         }
         return InteractionResultHolder.success(stack);
     }
     private boolean castSpell(ItemStack stack, Player player) {
         SpellResolver resolver = new SpellResolver(stack, player);
         return resolver.resolve();
+    }
+
+    public static boolean isInitialized(ItemStack stack) {
+        return stack.get(ComponentRegistry.WAND_COMPONENT.get()) != null && stack.get(ComponentRegistry.WAND_COMPONENT.get()).isInitialized();
     }
 }
 

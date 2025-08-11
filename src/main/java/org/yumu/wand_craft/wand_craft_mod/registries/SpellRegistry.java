@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
+import org.yumu.wand_craft.wand_craft_mod.spell.NoneSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.effect.SpeedEnhancementSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.projectile.FireballSpell;
 
@@ -47,6 +48,9 @@ public class SpellRegistry {
     private static <T extends AbstractSpell> DeferredHolder<AbstractSpell, T> registerSpell(T spell){
         return SPELLS.register(spell.getSpellName(), () -> spell);
     }
+
+
+    public static final DeferredHolder<AbstractSpell, NoneSpell> NONE = registerSpell(new NoneSpell());
 
     public static final DeferredHolder<AbstractSpell, FireballSpell> FIREBALL = registerSpell(new FireballSpell());
     public static final DeferredHolder<AbstractSpell, SpeedEnhancementSpell> SPEED_ENHANCEMENT = registerSpell(new SpeedEnhancementSpell());

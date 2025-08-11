@@ -12,7 +12,6 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.block.Arcane_Engraver.ArcaneEngraverBlock;
-import org.yumu.wand_craft.wand_craft_mod.block.Arcane_Engraver.ArcaneEngraverBlockEntity;
 
 public class BlockRegistry {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, WandCraft.MODID);
@@ -25,11 +24,5 @@ public class BlockRegistry {
 
     public static final DeferredHolder<Block, Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", ()->new Block(BlockBehaviour.Properties.of()));
 
-    public static final DeferredHolder<Block, ArcaneEngraverBlock> ARCANE_ENGRAVER_BLOCK = BLOCKS.register("arcane_engraver",
-            () -> new ArcaneEngraverBlock(BlockBehaviour.Properties.of().strength(3.0F, 3.0F)));
-    // Arcane Engraver Block Entity
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ArcaneEngraverBlockEntity>> ARCANE_ENGRAVER_BLOCK_ENTITY =
-            BLOCK_ENTITIES.register("arcane_engraver", () -> BlockEntityType.Builder.of(
-                    ArcaneEngraverBlockEntity::new, ARCANE_ENGRAVER_BLOCK.get()).build(null));
-
+    public static final DeferredHolder<Block, ArcaneEngraverBlock> ARCANE_ENGRAVER_BLOCK = BLOCKS.register("arcane_engraver", ArcaneEngraverBlock::new);
 }
