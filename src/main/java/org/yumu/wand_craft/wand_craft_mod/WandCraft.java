@@ -50,6 +50,7 @@ public class WandCraft {
         ItemRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
+        EntityRegisry.register(modEventBus);
 
         MenuRegistry.register(modEventBus);
         ComponentRegistry.register(modEventBus);

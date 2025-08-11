@@ -1,11 +1,10 @@
 package org.yumu.wand_craft.wand_craft_mod.spell;
 
-public class NoneSpell extends AbstractSpell implements IprojectileSpell,IeffectSpell{
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.HitResult;
 
-    @Override
-    public void modifyProjectile(IprojectileSpell projectileSpell) {
+public class NoneSpell extends AbstractEffectSpell implements IprojectileSpell{
 
-    }
 
     @Override
     public boolean onCast() {
@@ -16,4 +15,18 @@ public class NoneSpell extends AbstractSpell implements IprojectileSpell,Ieffect
         super("none", 0, 0, false, "none");
     }
 
+    @Override
+    public void eachTick(Entity entity) {
+
+    }
+
+    @Override
+    public void onHit(Entity Projectile, HitResult result) {
+
+    }
+
+    @Override
+    public void inEnd(Entity entity) {
+
+    }
 }

@@ -5,12 +5,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.world.phys.Vec3;
 import org.yumu.wand_craft.wand_craft_mod.api.MagicData;
 import org.yumu.wand_craft.wand_craft_mod.api.WandData;
+import org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb.MiniBombProjectile;
 import org.yumu.wand_craft.wand_craft_mod.registries.ComponentRegistry;
 import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
@@ -89,9 +95,15 @@ public class Wand extends Item {
                 }
 
                 // 向玩家发送当前 mana 值的消息
-                player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));
-                player.sendSystemMessage(Component.literal("当前存储的魔法: " + spells));
+//                player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));
+//                player.sendSystemMessage(Component.literal("当前存储的魔法: " + spells));
             }
+            MiniBombProjectile miniBombProjectile = new MiniBombProjectile(level,10,5, player);
+            Vec3 spawn = player.getEyePosition().add(player.getForward());
+            miniBombProjectile.moveTo(spawn.x, spawn.y - miniBombProjectile.getBoundingBox().getYsize() / 2, spawn.z, miniBombProjectile.getYRot() + 180, miniBombProjectile.getXRot());
+
+            level.addFreshEntity(miniBombProjectile);
+
         }
         return InteractionResultHolder.success(stack);
     }
