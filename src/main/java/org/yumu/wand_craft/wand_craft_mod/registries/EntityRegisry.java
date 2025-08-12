@@ -8,6 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
+import org.yumu.wand_craft.wand_craft_mod.entity.spell.bomb.BombProjectile;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb.MiniBombProjectile;
 
 public class EntityRegisry {
@@ -20,4 +21,10 @@ public class EntityRegisry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "mini_bomb").toString()));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<BombProjectile>> BOMB =
+            ENTITIES.register("bomb", () -> EntityType.Builder.<BombProjectile>of(BombProjectile::new, MobCategory.MISC)
+                    .sized(1.0f, 1.0f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "bomb").toString()));
 }

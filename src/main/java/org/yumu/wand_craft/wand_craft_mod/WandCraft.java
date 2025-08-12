@@ -43,6 +43,7 @@ public class WandCraft {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(SpellRegistry::registerRegistry);
 
+
         // 注册所有内容 - 注意注册顺序
         SpellRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
@@ -93,5 +94,8 @@ public class WandCraft {
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+
+
+
     }
 }

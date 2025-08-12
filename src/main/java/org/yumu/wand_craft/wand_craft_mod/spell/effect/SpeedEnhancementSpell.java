@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  */
 public class SpeedEnhancementSpell extends AbstractEffectSpell {
 
-    private float magnification=1.5f;
+    private float magnification=1.25f;
 
     public SpeedEnhancementSpell() {
         super("speed_enhancement", 0, 1, false, "speed_enhancement");

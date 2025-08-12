@@ -6,6 +6,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
+import org.yumu.wand_craft.wand_craft_mod.entity.spell.bomb.BombProjectileRenderer;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb.MiniBombProjectileRenderer;
 import org.yumu.wand_craft.wand_craft_mod.registries.EntityRegisry;
 import org.yumu.wand_craft.wand_craft_mod.registries.MenuRegistry;
@@ -22,7 +23,8 @@ public class ClientSetup {
 
 
     @SubscribeEvent
-    public static void registerEntityRander(EntityRenderersEvent.RegisterRenderers event){
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(EntityRegisry.MINI_BOMB.get(), MiniBombProjectileRenderer::new);
+        event.registerEntityRenderer(EntityRegisry.BOMB.get(), BombProjectileRenderer::new);
     }
 }

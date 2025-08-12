@@ -17,6 +17,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractProjectileSpell;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public abstract class AbstractMagicProjectile extends Projectile {
@@ -54,6 +55,10 @@ public abstract class AbstractMagicProjectile extends Projectile {
         this.expireTime = expireTime;
     }
 
+    @Override
+    public boolean shouldBeSaved() {
+        return super.shouldBeSaved() && !Objects.equals(getRemovalReason(), RemovalReason.UNLOADED_TO_CHUNK);
+    }
 
     public void shoot(Vec3 rotation){
         setDeltaMovement( rotation.scale(getSpeed()));
@@ -61,7 +66,7 @@ public abstract class AbstractMagicProjectile extends Projectile {
 
     @Override
     protected double getDefaultGravity() {
-        return 0.1;
+        return 0.01;
     }
 
     @Override

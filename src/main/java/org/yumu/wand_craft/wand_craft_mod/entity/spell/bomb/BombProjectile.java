@@ -1,30 +1,25 @@
-package org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb;
-
-
+package org.yumu.wand_craft.wand_craft_mod.entity.spell.bomb;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.AbstractMagicProjectile;
+
 import org.yumu.wand_craft.wand_craft_mod.registries.EntityRegisry;
 
 import java.util.List;
 
-public class MiniBombProjectile extends AbstractMagicProjectile {
-
-
-
-    public MiniBombProjectile(EntityType<? extends MiniBombProjectile> pEntityType, Level pLevel) {
+public class BombProjectile extends AbstractMagicProjectile {
+    public BombProjectile(EntityType<? extends BombProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.expireTime=15*20;
     }
 
-    public MiniBombProjectile(Level level, float speed, float damage, LivingEntity shooter) {
-        super(EntityRegisry.MINI_BOMB.get(), level);
+    public BombProjectile(Level level, float speed, float damage, LivingEntity shooter) {
+        super(EntityRegisry.BOMB.get(), level);
         this.speed = speed;
         this.damage = damage;
         this.shoot(shooter.getLookAngle());
@@ -33,7 +28,7 @@ public class MiniBombProjectile extends AbstractMagicProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return 0.08;
+        return 0.05;
     }
 
 
@@ -47,14 +42,13 @@ public class MiniBombProjectile extends AbstractMagicProjectile {
         if (!level().isClientSide) {
             // 创建爆炸效果 - 使用较小的爆炸半径和力量
             level().explode(
-                    this,                    // 爆炸源实体
-                    this.getX(),            // 爆炸X坐标
-                    this.getY(),            // 爆炸Y坐标
-                    this.getZ(),            // 爆炸Z坐标
-                    1.0F,                   // 爆炸半径(小型炸弹应该较小)
-                    Level.ExplosionInteraction.NONE  // 不破坏方块，只造成伤害
+                    this,
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    1.0F,
+                    Level.ExplosionInteraction.NONE
             );
-            // 获取附近的实体并造成伤害
             AABB explosionArea = this.getBoundingBox().inflate(2.0D, 2.0D, 2.0D);
             List<Entity> entities = level().getEntities(this, explosionArea);
 
