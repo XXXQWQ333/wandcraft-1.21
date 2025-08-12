@@ -27,12 +27,18 @@ public class MiniBombProjectile extends AbstractMagicProjectile {
         this.speed = speed;
         this.damage = damage;
         this.shoot(shooter.getLookAngle());
+        this.expireTime=15*20;
     }
 
-
+    @Override
+    protected double getDefaultGravity() {
+        return 5.0;
+    }
 
     @Override
     protected void onHit(HitResult result) {
+        float speed = getSpeed();
+        int count=this.tickCount;
         super.onHit(result);
         // 只在服务端执行爆炸逻辑
         if (!level().isClientSide) {

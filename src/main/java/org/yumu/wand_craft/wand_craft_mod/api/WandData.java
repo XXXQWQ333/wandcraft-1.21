@@ -179,7 +179,7 @@ public class WandData {
     public boolean recast(){
         Random random = new Random();
         this.maxSpellSlot = 1 + random.nextInt(9);
-        this.castCount = 1 + random.nextInt(2);
+        this.castCount = 1;
         return true;
     }
 

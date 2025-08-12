@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.HitResult;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.AbstractMagicProjectile;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractEffectSpell;
+import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 
 import java.lang.reflect.Method;
 
@@ -20,31 +21,26 @@ public class SpeedEnhancementSpell extends AbstractEffectSpell {
     }
 
     @Override
-    protected void eachTick(Entity entity) {
+    public void eachTick(Entity entity) {
         if(entity.tickCount!=1)return;
         if(!(entity instanceof AbstractMagicProjectile))return;
         ((AbstractMagicProjectile) entity).setSpeed(((AbstractMagicProjectile) entity).getSpeed()*magnification);
 
-//        if (canChangeSpeed(entity, "setSpeed", void.class)) {
-//            // 调用 setSpeed 方法
-//            try {
-//
-//                Method method = entity.getClass().getMethod("setSpeed", void.class);
-//                method.invoke(entity, 1.5f); // 调用方法并传入参数 1.5f
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     @Override
-    protected void onHit(Entity entity, HitResult result) {
+    public void onHit(Entity entity, HitResult result) {
 
     }
 
     @Override
-    protected void inEnd(Entity entity) {
+    public void inEnd(Entity entity) {
 
+    }
+
+    @Override
+    public AbstractSpell Copy() {
+        return new SpeedEnhancementSpell();
     }
 //    public static boolean canChangeSpeed(Object obj, String methodName, Class<?>... parameterTypes) {
 //        try {

@@ -1,10 +1,6 @@
 // org/yumu/wand_craft/wand_craft_mod/item/spell/AbstractSpell.java
 package org.yumu.wand_craft.wand_craft_mod.spell;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 
@@ -30,7 +26,7 @@ public abstract class AbstractSpell {
     private boolean isBlockPoint;
     private ResourceLocation spellId;
     private String spellName;
-
+    //protected ResourceLocation nextSpellId=null;
 
     /**
      * 构造一个新的法术对象
@@ -45,6 +41,23 @@ public abstract class AbstractSpell {
         this.spellName = spellName;
 
     }
+
+    public AbstractSpell Copy() {
+        try {
+            // 使用反射创建新实例（需要每个子类有无参构造函数）
+            AbstractSpell copy = this.getClass().getDeclaredConstructor().newInstance();
+            copy.costCastCount = this.costCastCount;
+            copy.costMana = this.costMana;
+            copy.isBlockPoint = this.isBlockPoint;
+            copy.spellId = this.spellId;
+            copy.spellName = this.spellName;
+            // nextSpellId 保持为 null
+            return copy;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to copy spell", e);
+        }
+    }
+//    public abstract AbstractSpell Copy();
 
     /**
      * 获取法术名称
@@ -67,6 +80,12 @@ public abstract class AbstractSpell {
         return costMana;
     }
 
+//    public void setNextSpellId(ResourceLocation spellId) {
+//        this.nextSpellId = spellId;
+//    }
+//    public AbstractSpell getNextSpellId() {
+//        return nextSpell;
+//    }
 
     public boolean isBlockPoint() {
         return isBlockPoint;

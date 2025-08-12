@@ -12,28 +12,35 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
-
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractEffectSpell;
+import org.yumu.wand_craft.wand_craft_mod.spell.AbstractProjectileSpell;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class AbstractMagicProjectile extends Projectile {
 
-    protected ResourceLocation spellId=null;
+//    protected ResourceLocation effectSpellChain=null;
     protected int expireTime;
     protected float damage;
     protected float speed;
+    List<AbstractEffectSpell> subEffectSpells;
 
     public float getSpeed() {
         return speed;
     }
-    public float setSpeed(float speed){
-        return this.speed = speed;
+    public void setSpeed(float speed) {
+        this.speed = speed;
+        // 如果已经有运动向量，则更新它以匹配新速度
+        Vec3 currentMotion = getDeltaMovement();
+        if (currentMotion.lengthSqr() > 0) {
+            setDeltaMovement(currentMotion.normalize().scale(speed));
+        }
     }
     public void setExpireTime(int expireTime) {
         this.expireTime = expireTime;
     }
-
 
     public int getExpireTime() {
         return expireTime;
@@ -41,6 +48,10 @@ public abstract class AbstractMagicProjectile extends Projectile {
 
     protected AbstractMagicProjectile(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
+    }
+    protected AbstractMagicProjectile(EntityType<? extends Projectile> entityType, Level level,int expireTime) {
+        super(entityType, level);
+        this.expireTime = expireTime;
     }
 
 
@@ -59,32 +70,34 @@ public abstract class AbstractMagicProjectile extends Projectile {
         return super.canHitEntity(target) && target != owner && (owner == null || !owner.isAlliedTo(target));
     }
 
-
-    protected void DecorateEachTick(Entity entity){
-        if(spellId==null) return;
-        if(!(SpellRegistry.getSpell(spellId) instanceof AbstractEffectSpell))return;
-        AbstractEffectSpell spell = (AbstractEffectSpell)SpellRegistry.getSpell(spellId);
-        spell.DecorateEachTick(entity);
+    public void setSubEffectSpells(List<AbstractEffectSpell> subEffectSpells) {
+        this.subEffectSpells = subEffectSpells;
     }
-    protected void DecorateonHit(Entity Projectile,HitResult result){
-        if(spellId==null) return;
-        if(!(SpellRegistry.getSpell(spellId) instanceof AbstractEffectSpell))return;
-        AbstractEffectSpell spell = (AbstractEffectSpell)SpellRegistry.getSpell(spellId);
-        spell.DecorateonHit(Projectile,result);
+    protected void applyEffectEachTick(){
+        if(subEffectSpells==null)return;
+        for (AbstractEffectSpell spell : subEffectSpells){
+            spell.eachTick(this);
+        }
     }
-    protected void DecorateInEnd(Entity entity){
-        if(spellId==null) return;
-        if(!(SpellRegistry.getSpell(spellId) instanceof AbstractEffectSpell))return;
-        AbstractEffectSpell spell = (AbstractEffectSpell)SpellRegistry.getSpell(spellId);
-        spell.DecorateInEnd(entity);
+    protected void applyEffectOnHit(HitResult result){
+        if(subEffectSpells==null)return;
+        for (AbstractEffectSpell spell : subEffectSpells){
+            spell.onHit(this, result);
+        }
+    }
+    protected void applyEffectInEnd(){
+        if(subEffectSpells==null)return;
+        for (AbstractEffectSpell spell : subEffectSpells){
+            spell.inEnd(this);
+        }
     }
 
     @Override
     public void tick() {
         super.tick();
-        DecorateEachTick(this);
+        applyEffectEachTick();
         if(tickCount>expireTime){
-            DecorateInEnd(this);
+            applyEffectInEnd();
         }
         if(tickCount>expireTime){
             discard();
@@ -131,7 +144,7 @@ public abstract class AbstractMagicProjectile extends Projectile {
      */
     @Override
     protected void onHit(HitResult result) {
-        DecorateonHit(this,result);
+        applyEffectOnHit(result);
         super.onHit(result);
     }
 
@@ -140,13 +153,15 @@ public abstract class AbstractMagicProjectile extends Projectile {
         super.addAdditionalSaveData(compound);
         compound.putFloat("damage", damage);
         compound.putInt("tickCount", tickCount);
+
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.damage=compound.getFloat("damage");
-        this.tickCount=compound.getInt("tickCount");
+        this.damage = compound.getFloat("damage");
+        this.tickCount = compound.getInt("tickCount");
+
     }
 
     @Override

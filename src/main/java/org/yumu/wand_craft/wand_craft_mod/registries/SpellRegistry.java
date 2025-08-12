@@ -14,6 +14,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.NoneSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.effect.SpeedEnhancementSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.projectile.FireballSpell;
+import org.yumu.wand_craft.wand_craft_mod.spell.projectile.MiniBombSpell;
 
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class SpellRegistry {
     public static final DeferredHolder<AbstractSpell, NoneSpell> NONE = registerSpell(new NoneSpell());
 
     public static final DeferredHolder<AbstractSpell, FireballSpell> FIREBALL = registerSpell(new FireballSpell());
+    public static final DeferredHolder<AbstractSpell, MiniBombSpell> MINI_BOMB = registerSpell(new MiniBombSpell());
     public static final DeferredHolder<AbstractSpell, SpeedEnhancementSpell> SPEED_ENHANCEMENT = registerSpell(new SpeedEnhancementSpell());
 
 

@@ -98,11 +98,7 @@ public class Wand extends Item {
 //                player.sendSystemMessage(Component.literal("当前魔法值: " + currentMana));
 //                player.sendSystemMessage(Component.literal("当前存储的魔法: " + spells));
             }
-            MiniBombProjectile miniBombProjectile = new MiniBombProjectile(level,10,5, player);
-            Vec3 spawn = player.getEyePosition().add(player.getForward());
-            miniBombProjectile.moveTo(spawn.x, spawn.y - miniBombProjectile.getBoundingBox().getYsize() / 2, spawn.z, miniBombProjectile.getYRot() + 180, miniBombProjectile.getXRot());
-
-            level.addFreshEntity(miniBombProjectile);
+            castSpell(stack, player);
 
         }
         return InteractionResultHolder.success(stack);
@@ -115,6 +111,16 @@ public class Wand extends Item {
     public static boolean isInitialized(ItemStack stack) {
         return stack.get(ComponentRegistry.WAND_COMPONENT.get()) != null && stack.get(ComponentRegistry.WAND_COMPONENT.get()).isInitialized();
     }
+//    private void castSpell(ItemStack stack,Level level, Player player, InteractionHand hand) {
+//
+//        MiniBombProjectile miniBombProjectile = new MiniBombProjectile(level,10,5, player);
+//        Vec3 spawn = player.getEyePosition().add(player.getForward());
+//        miniBombProjectile.moveTo(spawn.x, spawn.y - miniBombProjectile.getBoundingBox().getYsize() / 2, spawn.z, miniBombProjectile.getYRot() + 180, miniBombProjectile.getXRot());
+//
+//        level.addFreshEntity(miniBombProjectile);
+//    }
+
+
 }
 
 
