@@ -244,8 +244,6 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
             });
         }
     }
-
-
     /**
      * 根据法杖数据更新法术槽位显示
      * @param wandStack 法杖物品栈
@@ -268,7 +266,6 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
             }
         }
     }
-
     /**
      * 将法术槽位的内容保存到法杖中
      * @param wandStack 法杖物品栈
@@ -298,7 +295,7 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
                     oldWandData.getMaxSpellSlot(),
                     spellIds,
                     oldWandData.getCastCount(),
-                    oldWandData.getIndex()
+                    0
             );
 
             wandStack.set(ComponentRegistry.WAND_COMPONENT.get(), newWandData);

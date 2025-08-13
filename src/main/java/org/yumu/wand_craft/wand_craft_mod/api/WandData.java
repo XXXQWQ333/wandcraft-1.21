@@ -5,9 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 
@@ -22,16 +20,29 @@ public class WandData {
     public static final String MAX_SPELL_SLOT = "maxSpellSlot";
     public static final String SPELLS = "spells";
     public static final String CASTCOUNT = "castCount";
+
     public static final String INDEX = "Index";
 
-    // 定义法术注册表的键
-    public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY =
-            ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "spells"));
-
+    //法杖属性
+    ///法杖的槽位
     int maxSpellSlot = 0;
+    ///存储的法术
     List<ResourceLocation> spellIds;
+    /// 法杖提供的施法次数，未初始化时为0
     int castCount = 0;
+    /// 法杖的装填需要的冷却时间
+    int coolDownTime = 0;
+    /// 法杖的可控性
+    Boolean isControllable=false;
+
+
+
+    //法术链索引
     int Index = 0;
+
+
+
+
 
     /**
      * 用于序列化与反序列化WandData对象的Codec编解码器。
@@ -259,17 +270,16 @@ public class WandData {
      * @param Index 新的选中法术索引
      */
     public void setIndex(int Index) {
-        this.Index = Index;
+        this.Index = Index%maxSpellSlot;
     }
 
-
-
-    /**
-     * 将选中的法术索引向后移动一位（循环）
-     */
-    public void selectPreviousSpell() {
-        if (!spellIds.isEmpty()) {
-            Index = (Index - 1 + spellIds.size()) % spellIds.size();
+    public ResourceLocation selectNextSpell(){
+        if (spellIds.isEmpty()|| maxSpellSlot > spellIds.size()) {
+            return null;
         }
+        ResourceLocation currentSpell = spellIds.get(Index);
+        Index = (Index + 1) % maxSpellSlot;
+        return currentSpell;
     }
+
 }

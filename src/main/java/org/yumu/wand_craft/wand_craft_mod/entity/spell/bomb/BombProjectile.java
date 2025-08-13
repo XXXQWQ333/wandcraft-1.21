@@ -28,7 +28,7 @@ public class BombProjectile extends AbstractMagicProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return 0.05;
+        return 0.08;
     }
 
 

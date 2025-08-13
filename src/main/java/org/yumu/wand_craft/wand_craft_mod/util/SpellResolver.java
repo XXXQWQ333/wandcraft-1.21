@@ -19,7 +19,8 @@ public class SpellResolver {
     private ItemStack stack;
     private Player player;
     private WandData wandData;
-    private List<AbstractSpell> spells=new ArrayList<>();
+    private MagicData magicData;
+
     private int sumCostMana=0;
     List<AbstractEffectSpell> subEffectSpells = new ArrayList<>();
     List<AbstractProjectileSpell> subProjectileSpells = new ArrayList<>();
@@ -27,56 +28,58 @@ public class SpellResolver {
         this.stack = stack;
         this.player = player;
         this.wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
+        this.magicData = MagicData.getPlayerMagicData(player);
+        List<AbstractSpell> spells=new ArrayList<>();
         if (wandData.getSpellIds() != null) {
             wandData.getSpellIds().stream().forEach(spellId -> {
                 spells.add(SpellRegistry.getSpell(spellId).Copy());
             });
         }
+        spellsAnalysis(spells);
     }
     //解析法术，单次法杖释放的法术
-    private boolean spellsAnalysis(){
+    private boolean spellsAnalysis(List<AbstractSpell> spells){
         if(spells==null || spells.size()<=0)return false;
 
         int costCastCount= wandData.getCastCount();
         subProjectileSpells = new ArrayList<>();
         subEffectSpells = new ArrayList<>();
-        for (AbstractSpell spell : spells){
-            if(costCastCount<=0)break;
-            if(spell.isBlockPoint())break;
+        int i=wandData.getIndex();
+        int empC=0;
+        for (;;i++){
+            i%= wandData.getMaxSpellSlot();
+            if(costCastCount<=0||empC> wandData.getMaxSpellSlot())break;
+            AbstractSpell spell = spells.get(i);
             if(spell.getSpellId().equals(SpellRegistry.NONE.getId())){
+                empC++;
                 continue;
             }
-
-            if(spell instanceof AbstractProjectileSpell) subProjectileSpells.add((AbstractProjectileSpell) spell);
-            else if(spell instanceof AbstractEffectSpell) subEffectSpells.add((AbstractEffectSpell) spell);
+            if(spell instanceof AbstractProjectileSpell) {
+                subProjectileSpells.add((AbstractProjectileSpell) spell);
+                empC++;
+            }
+            else if(spell instanceof AbstractEffectSpell) {
+                empC=0;
+                subEffectSpells.add((AbstractEffectSpell) spell);
+            }
             costCastCount-=spell.getCostCastCount();
             sumCostMana+=spell.getCostMana();
         }
+        wandData.setIndex(i);
         return true;
     }
-//    private boolean assemblingSpells(){
-//        MagicData magicData = MagicData.getPlayerMagicData(player);
-//        if(magicData.getMana()>=sumCostMana){
-//            if(subEffectSpells.size()>0){
-//                for (AbstractSpell spell : subProjectileSpells){
-//                    spell.setNextSpellId(subEffectSpells.get(0).getSpellId());
-//                }
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
     //入口
     public boolean resolve() {
-        //解析法术
-        if(spellsAnalysis()){
-            for (AbstractProjectileSpell spell : subProjectileSpells){
-//                    player.sendSystemMessage(Component.literal("当前魔法: " + spell));
-                spell.setSubEffectSpells(subEffectSpells);
-                spell.onCast(stack, player.level(), player, player.getUsedItemHand());
-            }
-        }
 
-        return false;
+        if(subProjectileSpells.isEmpty()||subProjectileSpells==null||magicData.getMana()<=sumCostMana) return false;
+
+        for (AbstractProjectileSpell spell : subProjectileSpells){
+            spell.setSubEffectSpells(subEffectSpells);
+            spell.onCast(stack, player.level(), player, player.getUsedItemHand());
+        }
+        magicData.setMana(magicData.getMana()-sumCostMana);
+
+
+        return true;
     }
 }
