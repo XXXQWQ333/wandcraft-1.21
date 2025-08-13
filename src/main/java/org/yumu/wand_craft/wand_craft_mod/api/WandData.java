@@ -20,6 +20,9 @@ public class WandData {
     public static final String MAX_SPELL_SLOT = "maxSpellSlot";
     public static final String SPELLS = "spells";
     public static final String CASTCOUNT = "castCount";
+    public static final String COOLDOWN_TIME = "coolDownTime";
+    public static final String CONTROLLABLE = "controllable";
+    public static final String MANA_REGEN = "manaRegen";
 
     public static final String INDEX = "Index";
 
@@ -30,11 +33,14 @@ public class WandData {
     List<ResourceLocation> spellIds;
     /// 法杖提供的施法次数，未初始化时为0
     int castCount = 0;
-    /// 法杖的装填需要的冷却时间
+    /// 法杖的装填需要的（tick）冷却时间
     int coolDownTime = 0;
     /// 法杖的可控性
     Boolean isControllable=false;
+    /// 法杖提供的回蓝
+    int manaRegen = 0;
 
+    //隐藏属性：暂时无
 
 
     //法术链索引
@@ -53,6 +59,9 @@ public class WandData {
                     Codec.INT.fieldOf(MAX_SPELL_SLOT).forGetter(WandData::getMaxSpellSlot),
                     ResourceLocation.CODEC.listOf().fieldOf(SPELLS).forGetter(WandData::getSpellIds),
                     Codec.INT.fieldOf(CASTCOUNT).forGetter(WandData::getCastCount),
+                    Codec.INT.fieldOf(COOLDOWN_TIME).forGetter(WandData::getCoolDownTime),
+                    Codec.BOOL.fieldOf(CONTROLLABLE).forGetter(WandData::getControllable),
+                    Codec.INT.fieldOf(MANA_REGEN).forGetter(WandData::getManaRegen),
                     Codec.INT.fieldOf(INDEX).forGetter(WandData::getIndex)
             ).apply(instance, WandData::new)
     );
@@ -66,6 +75,9 @@ public class WandData {
                 buf.writeInt(wandData.getMaxSpellSlot());
                 buf.writeInt(wandData.getSpellIds().size());
                 buf.writeInt(wandData.getCastCount());
+                buf.writeInt(wandData.getCoolDownTime());
+                buf.writeBoolean(wandData.getControllable());
+                buf.writeInt(wandData.getManaRegen());
                 buf.writeInt(wandData.getIndex());
                 for (ResourceLocation spellId : wandData.getSpellIds()) {
                     buf.writeResourceLocation(spellId);
@@ -75,12 +87,15 @@ public class WandData {
                 int maxSpellSlot = buf.readInt();
                 int spellCount = buf.readInt();
                 int castCount = buf.readInt();
+                int coolDownTime = buf.readInt();
+                Boolean isControllable = buf.readBoolean();
+                int manaRegen = buf.readInt();
                 int Index = buf.readInt();
                 List<ResourceLocation> spellIds = new ArrayList<>();
                 for (int i = 0; i < spellCount; i++) {
                     spellIds.add(buf.readResourceLocation());
                 }
-                return new WandData(maxSpellSlot, spellIds, castCount, Index);
+                return new WandData(maxSpellSlot, spellIds, castCount,coolDownTime,isControllable,manaRegen,Index);
             }
     );
 
@@ -122,28 +137,22 @@ public class WandData {
      * @param castCount 法术释放次数
      * @param Index 当前选中的法术索引
      */
-    public WandData(int maxSpellSlot, List<ResourceLocation> spellIds, int castCount, int Index) {
+    public WandData(int maxSpellSlot, List<ResourceLocation> spellIds, int castCount,int coolDownTime,Boolean isControllable,int manaRegen ,int Index) {
         this.maxSpellSlot = maxSpellSlot;
         this.spellIds = spellIds != null ? spellIds : new ArrayList<>();
         this.castCount = castCount;
+        this.coolDownTime = coolDownTime;
+        this.isControllable = isControllable;
+        this.manaRegen = manaRegen;
         this.Index = Index;
     }
 
-    /**
-     * 构造一个完整的WandData对象
-     * @param maxSpellSlot 最大法术槽数量
-     * @param spellIds 法术ID列表，可以为null
-     * @param castCount 法术释放次数
-     */
-    public WandData(int maxSpellSlot, List<ResourceLocation> spellIds, int castCount) {
-        this(maxSpellSlot, spellIds, castCount, 0);
-    }
 
     /**
      * 构造一个默认的WandData对象，所有字段初始化为默认值
      */
     public WandData() {
-        this(0, null, 0, 0);
+        this(0, null,0,0,false, 0, 0);
     }
 
     /**
@@ -181,6 +190,18 @@ public class WandData {
             registry.getOptional(id).ifPresent(spells::add);
         }
         return spells;
+    }
+
+    public Boolean getControllable() {
+        return isControllable;
+    }
+
+    public int getCoolDownTime() {
+        return 20;
+    }
+
+    public int getManaRegen() {
+        return manaRegen;
     }
 
     /**

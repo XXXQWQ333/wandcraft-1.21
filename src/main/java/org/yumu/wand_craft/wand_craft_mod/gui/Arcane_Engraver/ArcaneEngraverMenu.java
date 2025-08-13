@@ -295,6 +295,9 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
                     oldWandData.getMaxSpellSlot(),
                     spellIds,
                     oldWandData.getCastCount(),
+                    oldWandData.getCoolDownTime(),
+                    oldWandData.getControllable(),
+                    oldWandData.getManaRegen(),
                     0
             );
 

@@ -20,6 +20,7 @@ public class SpellResolver {
     private Player player;
     private WandData wandData;
     private MagicData magicData;
+    private int newIndex;
 
     private int sumCostMana=0;
     List<AbstractEffectSpell> subEffectSpells = new ArrayList<>();
@@ -44,12 +45,12 @@ public class SpellResolver {
         int costCastCount= wandData.getCastCount();
         subProjectileSpells = new ArrayList<>();
         subEffectSpells = new ArrayList<>();
-        int i=wandData.getIndex();
+        newIndex=wandData.getIndex();
         int empC=0;
-        for (;;i++){
-            i%= wandData.getMaxSpellSlot();
+        for (;;newIndex++){
+            newIndex%= wandData.getMaxSpellSlot();
             if(costCastCount<=0||empC> wandData.getMaxSpellSlot())break;
-            AbstractSpell spell = spells.get(i);
+            AbstractSpell spell = spells.get(newIndex);
             if(spell.getSpellId().equals(SpellRegistry.NONE.getId())){
                 empC++;
                 continue;
@@ -65,7 +66,8 @@ public class SpellResolver {
             costCastCount-=spell.getCostCastCount();
             sumCostMana+=spell.getCostMana();
         }
-        wandData.setIndex(i);
+
+
         return true;
     }
     //入口
@@ -79,6 +81,10 @@ public class SpellResolver {
         }
         magicData.setMana(magicData.getMana()-sumCostMana);
 
+        if (newIndex<= wandData.getIndex()){
+            player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
+        }
+        wandData.setIndex(newIndex);
 
         return true;
     }

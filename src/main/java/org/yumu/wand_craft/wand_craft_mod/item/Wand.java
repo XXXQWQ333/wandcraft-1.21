@@ -58,8 +58,12 @@ public class Wand extends Item {
                     initializeWand(wandData,stack, player);
                 }
             }
+            if(player.getCooldowns().isOnCooldown(this)){
+                return InteractionResultHolder.fail(stack);
+            }
             //如果已经注册
             castSpell(stack, player);
+//            player.getCooldowns().addCooldown(stack.getItem(), 20);
         }
         return InteractionResultHolder.success(stack);
     }
@@ -71,6 +75,7 @@ public class Wand extends Item {
     public static boolean isInitialized(ItemStack stack) {
         return stack.get(ComponentRegistry.WAND_COMPONENT.get()) != null && stack.get(ComponentRegistry.WAND_COMPONENT.get()).isInitialized();
     }
+
 
     public void initializeWand(WandData wandData ,ItemStack stack, Player player){
         // 创建新的法杖数据
