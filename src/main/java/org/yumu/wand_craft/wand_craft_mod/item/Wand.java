@@ -1,9 +1,15 @@
 // org/yumu/wand_craft/wand_craft_mod/item/Wand.java
 package org.yumu.wand_craft.wand_craft_mod.item;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 
 import net.minecraft.world.item.Item;
@@ -11,12 +17,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.api.WandData;
+import org.yumu.wand_craft.wand_craft_mod.registries.AttributeRegistry;
 import org.yumu.wand_craft.wand_craft_mod.registries.ComponentRegistry;
 import org.yumu.wand_craft.wand_craft_mod.util.SpellResolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Wand extends Item {
 
@@ -43,6 +52,35 @@ public class Wand extends Item {
                 tooltipComponents.add(Component.literal("未初始化的法杖"));
             }
         }
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+       if( !level.isClientSide() && entity instanceof Player player){
+           AttributeInstance manaRegenAttr=player.getAttribute(AttributeRegistry.MANA_REGEN_NUM);
+           if(manaRegenAttr==null)return;
+           if(player.getMainHandItem() == stack){
+               if(ComponentRegistry.WAND_COMPONENT.isBound()){
+                   WandData wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
+                   if(wandData!=null){
+                       AttributeModifier modifier = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"), wandData.getManaRegen(), AttributeModifier.Operation.ADD_VALUE);
+                       // 添加修饰符
+                       if (!manaRegenAttr.hasModifier(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"))) {
+                           manaRegenAttr.addPermanentModifier(modifier);
+                       }
+                   }
+               }
+
+           }else{
+               List<AttributeModifier> modifiers = new ArrayList<>(manaRegenAttr.getModifiers());
+               for (AttributeModifier modifier : modifiers) {
+                   if (modifier.id().equals(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"))) {
+                       manaRegenAttr.removeModifier(modifier);
+                   }
+               }
+               manaRegenAttr.setBaseValue(manaRegenAttr.getBaseValue());
+           }
+       }
     }
 
     @Override
@@ -80,7 +118,7 @@ public class Wand extends Item {
     public void initializeWand(WandData wandData ,ItemStack stack, Player player){
         // 创建新的法杖数据
         wandData = new WandData();
-        wandData.recast();
+        wandData.reforge();
         // 确保 spellIds 被正确初始化
         if (wandData.getSpellIds() == null) {
             wandData.setSpellIds(new ArrayList<>());

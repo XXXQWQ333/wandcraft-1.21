@@ -197,7 +197,7 @@ public class WandData {
     }
 
     public int getCoolDownTime() {
-        return 20;
+        return coolDownTime;
     }
 
     public int getManaRegen() {
@@ -208,10 +208,11 @@ public class WandData {
      * 随机重新设置法杖的最大法术槽数量（范围为1~9）以及法术释放次数（范围为1~2）
      * @return 总是返回true
      */
-    public boolean recast(){
+    public boolean reforge(){
         Random random = new Random();
         this.maxSpellSlot = 1 + random.nextInt(9);
         this.castCount = 1;
+        this.manaRegen= random.nextInt(5);
         return true;
     }
 
