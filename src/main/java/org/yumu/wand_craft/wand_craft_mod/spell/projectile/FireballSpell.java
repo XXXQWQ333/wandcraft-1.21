@@ -18,7 +18,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 public class FireballSpell extends AbstractProjectileSpell {
 
     public FireballSpell() {
-        super("fireball", 1, 1, false, "fireball");
+        super("fireball_spell", 1, 1, false, "fireball_spell");
     }
 
     @Override

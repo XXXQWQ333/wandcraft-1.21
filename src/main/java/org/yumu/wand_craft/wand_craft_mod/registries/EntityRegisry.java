@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.bomb.BombProjectile;
+import org.yumu.wand_craft.wand_craft_mod.entity.spell.magic_missile.MagicArrowProjectile;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb.MiniBombProjectile;
 
 public class EntityRegisry {
@@ -27,4 +28,9 @@ public class EntityRegisry {
                     .sized(1.0f, 1.0f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "bomb").toString()));
+    public static final DeferredHolder<EntityType<?>, EntityType<MagicArrowProjectile>> MAGIC_ARROW =
+            ENTITIES.register("magic_arrow", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "magic_arrow").toString()));
 }
