@@ -271,8 +271,8 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
      * @param wandStack 法杖物品栈
      */
     public void saveSpellsToWand(ItemStack wandStack) {
-        WandData oldWandData = wandStack.get(ComponentRegistry.WAND_COMPONENT.get());
-        if (oldWandData != null && oldWandData.isInitialized()) {
+        WandData wandData = wandStack.get(ComponentRegistry.WAND_COMPONENT.get());
+        if (wandData != null && wandData.isInitialized()) {
             List<ResourceLocation> spellIds = new ArrayList<>();
 
             for (int i = 0; i < 9; i++) {
@@ -290,18 +290,10 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
                     spellIds.add(SpellRegistry.NONE.getId());
                 }
             }
+            wandData.setSpellIds(spellIds);
+            wandData.setIndex(0);
 
-            WandData newWandData = new WandData(
-                    oldWandData.getMaxSpellSlot(),
-                    spellIds,
-                    oldWandData.getCastCount(),
-                    oldWandData.getCoolDownTime(),
-                    oldWandData.getControllable(),
-                    oldWandData.getManaRegen(),
-                    0
-            );
-
-            wandStack.set(ComponentRegistry.WAND_COMPONENT.get(), newWandData);
+//            wandStack.set(ComponentRegistry.WAND_COMPONENT.get(), newWandData);
         }
     }
     private void addPlayerInventory(Inventory playerInventory) {

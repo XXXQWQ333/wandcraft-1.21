@@ -4,7 +4,8 @@
   "block.wandcraft.example_block": "Example Block",
   "item.wandcraft.example_item": "Example Item",
   "item.wandcraft.wand": "Magic Wand",
-  "wandcraft.wand.spell_slots": "Spell Slots: %s",
+  "wandcraft.wand.spell_slots": "spell slots: %s",
+  "wandcraft.wand.mana_regen": "mana regeneration bonus: %s",
   "block.wandcraft.arcane_engraver": "Arcane Engraver",
   "spell.wandcraft.fireball": "Fireball Spell",
   "spell.wandcraft.speed_enhancement": "Speed Enhancement Spell"

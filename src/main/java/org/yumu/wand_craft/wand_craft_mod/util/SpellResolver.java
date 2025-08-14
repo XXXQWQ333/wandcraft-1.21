@@ -57,10 +57,10 @@ public class SpellResolver {
             }
             if(spell instanceof AbstractProjectileSpell) {
                 subProjectileSpells.add((AbstractProjectileSpell) spell);
-                empC++;
+                empC=0;
             }
             else if(spell instanceof AbstractEffectSpell) {
-                empC=0;
+                empC++;
                 subEffectSpells.add((AbstractEffectSpell) spell);
             }
             costCastCount-=spell.getCostCastCount();
@@ -83,6 +83,10 @@ public class SpellResolver {
 
         if (newIndex<= wandData.getIndex()){
             player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
+            if(!wandData.getControllable()){
+                wandData.shuffleSpellId();
+            }
+
         }
         wandData.setIndex(newIndex);
 

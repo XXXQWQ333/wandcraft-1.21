@@ -6,10 +6,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 
 import net.minecraft.world.item.Item;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Wand extends Item {
-
+    private static final ResourceLocation WAND_BONUS = ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_nonus");
 
 
     public Wand(Properties properties) {
@@ -47,6 +49,7 @@ public class Wand extends Item {
             // 如果法杖已有数据，显示法术槽数量
             if (wandData != null) {
                 tooltipComponents.add(Component.translatable("wandcraft.wand.spell_slots", wandData.getMaxSpellSlot()));
+                tooltipComponents.add(Component.translatable("wandcraft.wand.mana_regen",wandData.getManaRegen()));
             } else {
                 // 如果法杖还没有数据，显示未初始化
                 tooltipComponents.add(Component.literal("未初始化的法杖"));
@@ -54,34 +57,9 @@ public class Wand extends Item {
         }
     }
 
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-       if( !level.isClientSide() && entity instanceof Player player){
-           AttributeInstance manaRegenAttr=player.getAttribute(AttributeRegistry.MANA_REGEN_NUM);
-           if(manaRegenAttr==null)return;
-           if(player.getMainHandItem() == stack){
-               if(ComponentRegistry.WAND_COMPONENT.isBound()){
-                   WandData wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
-                   if(wandData!=null){
-                       AttributeModifier modifier = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"), wandData.getManaRegen(), AttributeModifier.Operation.ADD_VALUE);
-                       // 添加修饰符
-                       if (!manaRegenAttr.hasModifier(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"))) {
-                           manaRegenAttr.addPermanentModifier(modifier);
-                       }
-                   }
-               }
 
-           }else{
-               List<AttributeModifier> modifiers = new ArrayList<>(manaRegenAttr.getModifiers());
-               for (AttributeModifier modifier : modifiers) {
-                   if (modifier.id().equals(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "wand_mana_regen"))) {
-                       manaRegenAttr.removeModifier(modifier);
-                   }
-               }
-               manaRegenAttr.setBaseValue(manaRegenAttr.getBaseValue());
-           }
-       }
-    }
+
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -118,7 +96,7 @@ public class Wand extends Item {
     public void initializeWand(WandData wandData ,ItemStack stack, Player player){
         // 创建新的法杖数据
         wandData = new WandData();
-        wandData.reforge();
+        wandData.initialized();
         // 确保 spellIds 被正确初始化
         if (wandData.getSpellIds() == null) {
             wandData.setSpellIds(new ArrayList<>());
@@ -127,6 +105,10 @@ public class Wand extends Item {
         stack.set(ComponentRegistry.WAND_COMPONENT.get(), wandData);
         // 向玩家发送消息
         player.sendSystemMessage(Component.literal("法杖已初始化，最大法术槽数量: " + wandData.getMaxSpellSlot()));
+    }
+
+    public static ResourceLocation getWandBonus() {
+        return WAND_BONUS;
     }
 }
 

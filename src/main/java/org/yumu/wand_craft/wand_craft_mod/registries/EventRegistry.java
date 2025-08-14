@@ -9,5 +9,6 @@ public class EventRegistry {
     public static void setup(){
         IEventBus bus = NeoForge.EVENT_BUS;
         bus.addListener(MagicEvents::onWorldTick);
+        bus.addListener(MagicEvents::onPlayerTick);
     }
 }

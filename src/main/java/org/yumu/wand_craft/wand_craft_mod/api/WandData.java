@@ -6,17 +6,21 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * 法杖数据类，用于存储和管理法杖的属性信息，包括最大法术槽位数和已装载的法术列表。
  */
 public class WandData {
+
+
+
+    public static final String DATA_ID = "dataId";
     public static final String MAX_SPELL_SLOT = "maxSpellSlot";
     public static final String SPELLS = "spells";
     public static final String CASTCOUNT = "castCount";
@@ -25,6 +29,7 @@ public class WandData {
     public static final String MANA_REGEN = "manaRegen";
 
     public static final String INDEX = "Index";
+    private ResourceLocation dataId=null;
 
     //法杖属性
     ///法杖的槽位
@@ -56,6 +61,7 @@ public class WandData {
      */
     public static final Codec<WandData> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
+                    ResourceLocation.CODEC.fieldOf(DATA_ID).forGetter(WandData::getDataId),
                     Codec.INT.fieldOf(MAX_SPELL_SLOT).forGetter(WandData::getMaxSpellSlot),
                     ResourceLocation.CODEC.listOf().fieldOf(SPELLS).forGetter(WandData::getSpellIds),
                     Codec.INT.fieldOf(CASTCOUNT).forGetter(WandData::getCastCount),
@@ -72,6 +78,7 @@ public class WandData {
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, WandData> STREAM_CODEC = StreamCodec.of(
             (buf, wandData) -> {
+                buf.writeResourceLocation(wandData.getDataId());
                 buf.writeInt(wandData.getMaxSpellSlot());
                 buf.writeInt(wandData.getSpellIds().size());
                 buf.writeInt(wandData.getCastCount());
@@ -84,6 +91,7 @@ public class WandData {
                 }
             },
             buf -> {
+                ResourceLocation dataId = buf.readResourceLocation();
                 int maxSpellSlot = buf.readInt();
                 int spellCount = buf.readInt();
                 int castCount = buf.readInt();
@@ -95,7 +103,7 @@ public class WandData {
                 for (int i = 0; i < spellCount; i++) {
                     spellIds.add(buf.readResourceLocation());
                 }
-                return new WandData(maxSpellSlot, spellIds, castCount,coolDownTime,isControllable,manaRegen,Index);
+                return new WandData(dataId,maxSpellSlot, spellIds, castCount,coolDownTime,isControllable,manaRegen,Index);
             }
     );
 
@@ -137,7 +145,10 @@ public class WandData {
      * @param castCount 法术释放次数
      * @param Index 当前选中的法术索引
      */
-    public WandData(int maxSpellSlot, List<ResourceLocation> spellIds, int castCount,int coolDownTime,Boolean isControllable,int manaRegen ,int Index) {
+    private WandData(ResourceLocation dataId,int maxSpellSlot, List<ResourceLocation> spellIds, int castCount,int coolDownTime,Boolean isControllable,int manaRegen ,int Index) {
+        if(dataId!=null){
+            this.dataId = dataId;
+        }
         this.maxSpellSlot = maxSpellSlot;
         this.spellIds = spellIds != null ? spellIds : new ArrayList<>();
         this.castCount = castCount;
@@ -146,15 +157,22 @@ public class WandData {
         this.manaRegen = manaRegen;
         this.Index = Index;
     }
+    public WandData(int maxSpellSlot, List<ResourceLocation> spellIds, int castCount,int coolDownTime,Boolean isControllable,int manaRegen ,int Index){
+        this(null,maxSpellSlot, spellIds, castCount,coolDownTime,isControllable,manaRegen,Index);
+    }
 
 
     /**
      * 构造一个默认的WandData对象，所有字段初始化为默认值
      */
     public WandData() {
-        this(0, null,0,0,false, 0, 0);
+        this(null,0, null,0,0,false, 0, 0);
     }
 
+    @Nullable
+    public ResourceLocation getDataId() {
+        return dataId;
+    }
     /**
      * 获取当前法杖的最大法术槽数量
      * @return 当前最大法术槽数量
@@ -204,17 +222,6 @@ public class WandData {
         return manaRegen;
     }
 
-    /**
-     * 随机重新设置法杖的最大法术槽数量（范围为1~9）以及法术释放次数（范围为1~2）
-     * @return 总是返回true
-     */
-    public boolean reforge(){
-        Random random = new Random();
-        this.maxSpellSlot = 1 + random.nextInt(9);
-        this.castCount = 1;
-        this.manaRegen= random.nextInt(5);
-        return true;
-    }
 
     /**
      * 设置法杖的最大法术槽数量
@@ -270,13 +277,30 @@ public class WandData {
         }
         return SpellRegistry.REGISTRY.get(spellIds.get(index));
     }
+    public boolean initialized(){
+        if(!isInitialized()){
+            this.dataId = ResourceLocation.fromNamespaceAndPath(
+                    WandCraft.MODID,
+                    "wand_mana_regen_" + UUID.randomUUID()
+            );
+        }
+        Random random = new Random();
+        this.coolDownTime=10;
+        this.maxSpellSlot = 1 + random.nextInt(9);
+        this.castCount = 1;
+        this.manaRegen= random.nextInt(5);
+        return true;
+    }
 
     /**
      * 检查法杖是否已初始化
      * @return 如果法杖已初始化返回true，否则返回false
      */
     public boolean isInitialized() {
-        return maxSpellSlot > 0;
+        if (dataId == null||maxSpellSlot < 0) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -302,6 +326,25 @@ public class WandData {
         ResourceLocation currentSpell = spellIds.get(Index);
         Index = (Index + 1) % maxSpellSlot;
         return currentSpell;
+    }
+
+    public void shuffleSpellId(){
+        shuffleFirstN(spellIds,getMaxSpellSlot(),null);
+    }
+    public static void shuffleFirstN(List<?> list, int n, Random random) {
+        // 参数检查
+        if (list == null || n <= 0) return;
+        n = Math.min(n, list.size()); // 确保n不超过列表大小
+
+        // 获取子列表视图(不创建新列表)
+        List<?> subList = list.subList(0, n);
+
+        // 使用指定或默认的随机数生成器
+        if (random != null) {
+            Collections.shuffle(subList, random);
+        } else {
+            Collections.shuffle(subList);
+        }
     }
 
 }
