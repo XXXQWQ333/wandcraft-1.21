@@ -2,6 +2,7 @@ package org.yumu.wand_craft.wand_craft_mod.util;
 
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.yumu.wand_craft.wand_craft_mod.api.MagicData;
@@ -21,7 +22,7 @@ public class SpellResolver {
     private WandData wandData;
     private MagicData magicData;
     private int newIndex;
-
+    int size=0;//用于标识最后1位有效法术
     private int sumCostMana=0;
     List<AbstractEffectSpell> subEffectSpells = new ArrayList<>();
     List<AbstractProjectileSpell> subProjectileSpells = new ArrayList<>();
@@ -31,10 +32,16 @@ public class SpellResolver {
         this.wandData = stack.get(ComponentRegistry.WAND_COMPONENT.get());
         this.magicData = MagicData.getPlayerMagicData(player);
         List<AbstractSpell> spells=new ArrayList<>();
+
         if (wandData.getSpellIds() != null) {
-            wandData.getSpellIds().stream().forEach(spellId -> {
-                spells.add(SpellRegistry.getSpell(spellId).Copy());
-            });
+            List<ResourceLocation> t=wandData.getSpellIds();
+            for (int i=0;i<t.size();i++){
+                spells.add(SpellRegistry.getSpell(t.get(i)).Copy());
+                if(!(t.get(i).equals(SpellRegistry.NONE.getId()))){
+                    size=i;
+                }
+            }
+            size++;
         }
         spellsAnalysis(spells);
     }
@@ -51,9 +58,9 @@ public class SpellResolver {
         for (;;newIndex++){
 
 
-            if(costCastCount<=0||empC> wandData.getMaxSpellSlot())break;
-            AbstractSpell spell = spells.get(newIndex%wandData.getMaxSpellSlot());
-            if(SpellRegistry.getSpellId( spell.getSpellName()).equals(SpellRegistry.NONE.getId())){
+            if(costCastCount<=0||empC> size)break;
+            AbstractSpell spell = spells.get(newIndex%size);
+            if(SpellRegistry.getSpellId(spell.getSpellName()).equals(SpellRegistry.NONE.getId())){
                 empC++;
                 continue;
             }
@@ -69,7 +76,7 @@ public class SpellResolver {
             costCastCount-=spell.getCostCastCount();
             sumCostMana+=spell.getCostMana();
             //达到最大施法上限
-            if(newIndex==wandData.getMaxSpellSlot()*2-1){
+            if(newIndex==size*2-1){
                 break;
             }
         }
@@ -88,18 +95,15 @@ public class SpellResolver {
             spell.setSubEffectSpells(subEffectSpells);
             spell.onCast(stack, player.level(), player, player.getUsedItemHand());
         }
-        player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
         //扣除法力
         magicData.setMana(magicData.getMana()-sumCostMana);
-
         //判断是否走完整条法术链
-        if (newIndex%wandData.getMaxSpellSlot()<= wandData.getIndex()||newIndex==wandData.getMaxSpellSlot()*2-1){
+        if (newIndex==size+1||newIndex%size<= wandData.getIndex()||newIndex==size*2-1){
             reload();
-
         }else{
-            wandData.setIndex(newIndex%wandData.getMaxSpellSlot());
+            wandData.setIndex(newIndex%size);
         }
-        player.sendSystemMessage(Component.literal("newIndex:"+newIndex%wandData.getMaxSpellSlot()));
+        player.sendSystemMessage(Component.literal("newIndex:"+newIndex%size));
 
         return true;
     }
