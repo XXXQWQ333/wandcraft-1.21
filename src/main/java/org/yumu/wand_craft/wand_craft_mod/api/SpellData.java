@@ -16,13 +16,13 @@ public class SpellData {
     public static final String SPELL_ID="spellId";
 
     public static final Codec<SpellData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ResourceLocation.CODEC.fieldOf(SPELL_ID).forGetter(data->data.spell.getSpellResource())
+                    ResourceLocation.CODEC.fieldOf(SPELL_ID).forGetter(data->SpellRegistry.getSpellId(data.spell.getSpellName()) )
             ).apply(instance, SpellData::new)
     );
     public static final StreamCodec<RegistryFriendlyByteBuf, SpellData> STREAM_CODEC =
             StreamCodec.composite(
                     ResourceLocation.STREAM_CODEC,
-                    spellData -> spellData.spell != null ? spellData.spell.getSpellResource() : null,
+                    spellData -> spellData.spell != null ? SpellRegistry.getSpellId(spellData.spell.getSpellName())  : null,
                     SpellData::new
             );
     private final AbstractSpell spell;

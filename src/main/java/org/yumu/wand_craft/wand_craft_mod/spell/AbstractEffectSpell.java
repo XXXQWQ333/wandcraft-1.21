@@ -12,8 +12,8 @@ import org.yumu.wand_craft.wand_craft_mod.registries.SpellRegistry;
  */
 public abstract class AbstractEffectSpell extends AbstractSpell{
 
-    public AbstractEffectSpell(String spellId, int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
-        super(spellId, costCastCount, costMana, isBlockPoint, spellName);
+    public AbstractEffectSpell( int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
+        super(costCastCount, costMana, isBlockPoint, spellName);
     }
 
 

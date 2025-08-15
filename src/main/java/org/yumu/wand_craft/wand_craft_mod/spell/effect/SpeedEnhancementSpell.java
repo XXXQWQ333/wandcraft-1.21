@@ -15,7 +15,7 @@ public class SpeedEnhancementSpell extends AbstractEffectSpell {
     private float magnification=1.25f;
 
     public SpeedEnhancementSpell() {
-        super("speed_enhancement", 0, 10, false, "speed_enhancement");
+        super( 0, 10, false, "speed_enhancement");
     }
 
     @Override

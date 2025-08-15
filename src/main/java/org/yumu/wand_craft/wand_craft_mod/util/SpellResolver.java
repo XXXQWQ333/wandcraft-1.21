@@ -46,12 +46,14 @@ public class SpellResolver {
         subProjectileSpells = new ArrayList<>();
         subEffectSpells = new ArrayList<>();
         newIndex=wandData.getIndex();
-        int empC=0;
+        int empC=0;//用于记录空法术（非投掷物法术）
+        //单次释放法术的个数不能超过法杖最大栏位的2倍
         for (;;newIndex++){
-            newIndex%= wandData.getMaxSpellSlot();
+
+
             if(costCastCount<=0||empC> wandData.getMaxSpellSlot())break;
-            AbstractSpell spell = spells.get(newIndex);
-            if(spell.getSpellId().equals(SpellRegistry.NONE.getId())){
+            AbstractSpell spell = spells.get(newIndex%wandData.getMaxSpellSlot());
+            if(SpellRegistry.getSpellId( spell.getSpellName()).equals(SpellRegistry.NONE.getId())){
                 empC++;
                 continue;
             }
@@ -63,8 +65,13 @@ public class SpellResolver {
                 empC++;
                 subEffectSpells.add((AbstractEffectSpell) spell);
             }
+
             costCastCount-=spell.getCostCastCount();
             sumCostMana+=spell.getCostMana();
+            //达到最大施法上限
+            if(newIndex==wandData.getMaxSpellSlot()*2-1){
+                break;
+            }
         }
 
 
@@ -73,23 +80,31 @@ public class SpellResolver {
     //入口
     public boolean resolve() {
 
+        //检查是否解析以及是否够法力释放
         if(subProjectileSpells.isEmpty()||subProjectileSpells==null||magicData.getMana()<=sumCostMana) return false;
 
+        //释放法术
         for (AbstractProjectileSpell spell : subProjectileSpells){
             spell.setSubEffectSpells(subEffectSpells);
             spell.onCast(stack, player.level(), player, player.getUsedItemHand());
         }
+        player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
+        //扣除法力
         magicData.setMana(magicData.getMana()-sumCostMana);
 
-        if (newIndex<= wandData.getIndex()){
-            player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
-            if(!wandData.getControllable()){
-                wandData.shuffleSpellId();
-            }
+        //判断是否走完整条法术链
+        if (newIndex%wandData.getMaxSpellSlot()<= wandData.getIndex()||newIndex==wandData.getMaxSpellSlot()*2-1){
+            reload();
 
+        }else{
+            wandData.setIndex(newIndex%wandData.getMaxSpellSlot());
         }
-        wandData.setIndex(newIndex);
+        player.sendSystemMessage(Component.literal("newIndex:"+newIndex%wandData.getMaxSpellSlot()));
 
         return true;
+    }
+    private void reload(){
+        wandData.setIndex(0);
+        player.getCooldowns().addCooldown(stack.getItem(), wandData.getCoolDownTime());
     }
 }

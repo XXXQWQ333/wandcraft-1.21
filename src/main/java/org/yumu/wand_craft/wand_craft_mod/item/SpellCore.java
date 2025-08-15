@@ -38,7 +38,7 @@ public class SpellCore extends Item {
         AbstractSpell spell = spellData.getSpell();
 
         if (spell != null) {
-            tooltipComponents.add(Component.translatable("spell.wandcraft." + spell.getSpellId()));
+            tooltipComponents.add(Component.translatable("spell.wandcraft." + spell.getSpellName()));
         } else {
             tooltipComponents.add(Component.literal("未绑定法术"));
         }

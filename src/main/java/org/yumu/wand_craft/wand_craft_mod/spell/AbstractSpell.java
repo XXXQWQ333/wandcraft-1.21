@@ -24,17 +24,12 @@ public abstract class AbstractSpell {
 
     /**是否为区分两个法术块的标志法术*/
     private boolean isBlockPoint;
-    private ResourceLocation spellId;
+//    private ResourceLocation spellId;
     private String spellName;
     //protected ResourceLocation nextSpellId=null;
 
-    /**
-     * 构造一个新的法术对象
-     * @param spellId 法术的名称
-     */
-    public AbstractSpell(String spellId, int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
-        // 将 spellId 转换为小写以符合 ResourceLocation 的要求
-        this.spellId = ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, spellId.toLowerCase());
+    public AbstractSpell(int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
+
         this.costCastCount = costCastCount;
         this.costMana = costMana;
         this.isBlockPoint = isBlockPoint;
@@ -49,7 +44,6 @@ public abstract class AbstractSpell {
             copy.costCastCount = this.costCastCount;
             copy.costMana = this.costMana;
             copy.isBlockPoint = this.isBlockPoint;
-            copy.spellId = this.spellId;
             copy.spellName = this.spellName;
             // nextSpellId 保持为 null
             return copy;
@@ -68,9 +62,7 @@ public abstract class AbstractSpell {
         return spellName;
     }
 
-    public ResourceLocation getSpellId() {
-        return spellId;
-    }
+
 
     public int getCostCastCount() {
         return costCastCount;
@@ -100,16 +92,13 @@ public abstract class AbstractSpell {
 
         AbstractSpell that = (AbstractSpell) obj;
 
-        return spellId != null ? spellId.equals(that.spellId) : that.spellId == null;
+        return spellName != null ? spellName.equals(that.spellName) : that.spellName == null;
     }
 
     @Override
     public int hashCode() {
-        return spellId != null ? spellId.hashCode() : 0;
+        return spellName != null ? spellName.hashCode() : 0;
     }
 
-    public ResourceLocation getSpellResource(){
-        return spellId;
-    }
 
 }

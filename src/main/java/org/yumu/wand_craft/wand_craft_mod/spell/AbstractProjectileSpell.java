@@ -23,8 +23,8 @@ public abstract class AbstractProjectileSpell extends AbstractSpell {
     protected AbstractMagicProjectile projectile;
     protected List<AbstractEffectSpell> subEffectSpells=null;
 
-    public AbstractProjectileSpell(String spellId, int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
-        super(spellId, costCastCount, costMana, isBlockPoint, spellName);
+    public AbstractProjectileSpell(int costCastCount, int costMana, boolean isBlockPoint, String spellName) {
+        super( costCastCount, costMana, isBlockPoint, spellName);
     }
 
 

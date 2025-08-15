@@ -11,7 +11,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractProjectileSpell;
 
 public class MagicHookSpell extends AbstractProjectileSpell {
     public MagicHookSpell() {
-        super("magic_hook_spell", 1, 1, false, "magic_hook_spell");
+        super( 1, 1, false, "magic_hook_spell");
     }
     @Override
     public void onCast(ItemStack stack, Level level, Player player, InteractionHand hand) {

@@ -11,7 +11,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractProjectileSpell;
 
 public class MagicArrowSpell extends AbstractProjectileSpell {
     public MagicArrowSpell() {
-        super("magic_arrow_spell", 1, 1, false, "magic_arrow_spell");
+        super( 1, 1, false, "magic_arrow_spell");
     }
 
     @Override

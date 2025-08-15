@@ -282,7 +282,7 @@ public class ArcaneEngraverMenu extends AbstractContainerMenu {
                     SpellData spellData = spellStack.get(ComponentRegistry.SPELL_COMPONENT.get());
                     // 检查法术数据是否不为空
                     if (spellData != null && spellData.getSpell() != null) {
-                        spellIds.add(spellData.getSpell().getSpellResource());
+                        spellIds.add(SpellRegistry.getSpellId(spellData.getSpell().getSpellName()));
                     } else {
                         spellIds.add(SpellRegistry.NONE.getId());
                     }

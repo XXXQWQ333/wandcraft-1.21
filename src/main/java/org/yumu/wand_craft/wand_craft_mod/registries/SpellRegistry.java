@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.NoneSpell;
+import org.yumu.wand_craft.wand_craft_mod.spell.effect.MulticastingSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.effect.SpeedEnhancementSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.projectile.*;
 
@@ -33,21 +34,29 @@ public class SpellRegistry {
     public static void registerRegistry(NewRegistryEvent event) {
         event.register(REGISTRY);
     }
+    private static <T extends AbstractSpell> DeferredHolder<AbstractSpell, T> registerSpell(T spell){
+        return SPELLS.register(spell.getSpellName(), () -> spell);
+    }
+
+
+
+
     public static AbstractSpell getSpell(ResourceLocation resourceLocation){
         return REGISTRY.get(resourceLocation);
     }
 
-    public static AbstractSpell getSpell(String spellId){
-        return getSpell(ResourceLocation.parse(spellId));
+    public static AbstractSpell getSpell(String spellName){
+        return REGISTRY.get(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, spellName));
     }
 
     public static List<AbstractSpell> getSpells(){
         return REGISTRY.stream().toList();
     }
-
-    private static <T extends AbstractSpell> DeferredHolder<AbstractSpell, T> registerSpell(T spell){
-        return SPELLS.register(spell.getSpellName(), () -> spell);
+    public static ResourceLocation getSpellId(String spellName){
+        return ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, spellName);
     }
+
+
 
 
     public static final DeferredHolder<AbstractSpell, NoneSpell> NONE = registerSpell(new NoneSpell());
@@ -88,6 +97,7 @@ public class SpellRegistry {
      */
     //效果法术注册
     public static final DeferredHolder<AbstractSpell, SpeedEnhancementSpell> SPEED_ENHANCEMENT = registerSpell(new SpeedEnhancementSpell());
+    public static final DeferredHolder<AbstractSpell, MulticastingSpell> MULTICASTING = registerSpell(new MulticastingSpell());
 
 
 }

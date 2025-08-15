@@ -11,7 +11,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 
 public class BombSpell extends AbstractProjectileSpell {
     public BombSpell() {
-        super("bomb_spell", 1, 1, false, "bomb_spell");
+        super( 1, 1, false, "bomb_spell");
     }
 
     @Override

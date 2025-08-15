@@ -14,7 +14,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractSpell;
 public class MiniBombSpell extends AbstractProjectileSpell {
 
     public MiniBombSpell() {
-        super("mini_bomb_spell", 1, 1, false, "mini_bomb_spell");
+        super( 1, 1, false, "mini_bomb_spell");
     }
 
     @Override

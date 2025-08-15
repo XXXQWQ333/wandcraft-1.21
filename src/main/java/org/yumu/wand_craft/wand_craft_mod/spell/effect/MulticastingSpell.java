@@ -6,7 +6,7 @@ import org.yumu.wand_craft.wand_craft_mod.spell.AbstractEffectSpell;
 
 public class MulticastingSpell extends AbstractEffectSpell {
     public MulticastingSpell() {
-        super("muticasting_spell", -1, 10, false,"muticasting_spell");
+        super( -1, 10, false,"muticasting_spell");
     }
 
     @Override

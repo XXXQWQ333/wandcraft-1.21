@@ -8,7 +8,7 @@ import net.minecraft.world.phys.HitResult;
 public class NoneSpell extends AbstractEffectSpell {
 
     public NoneSpell() {
-        super("none", 0, 0, false, "none");
+        super( 0, 0, false, "none");
     }
 
     @Override
