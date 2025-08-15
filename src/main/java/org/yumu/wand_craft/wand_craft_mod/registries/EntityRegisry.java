@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.yumu.wand_craft.wand_craft_mod.WandCraft;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.bomb.BombProjectile;
+import org.yumu.wand_craft.wand_craft_mod.entity.spell.magic_hook.MagicHookProjectile;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.magic_missile.MagicArrowProjectile;
 import org.yumu.wand_craft.wand_craft_mod.entity.spell.mini_bomb.MiniBombProjectile;
 
@@ -33,4 +34,9 @@ public class EntityRegisry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "magic_arrow").toString()));
+    public static final DeferredHolder<EntityType<?>, EntityType<MagicHookProjectile>> MAGIC_HOOK =
+            ENTITIES.register("magic_hook", () -> EntityType.Builder.<MagicHookProjectile>of(MagicHookProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(ResourceLocation.fromNamespaceAndPath(WandCraft.MODID, "magic_hook").toString()));
 }

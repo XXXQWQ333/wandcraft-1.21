@@ -23,12 +23,11 @@ public class MiniBombProjectile extends AbstractMagicProjectile {
         this.expireTime=15*20;
     }
 
-    public MiniBombProjectile(Level level, float speed, float damage, LivingEntity shooter) {
-        super(EntityRegisry.MINI_BOMB.get(), level);
+    public MiniBombProjectile(Level level, float speed, float damage, Entity shooter) {
+        super(EntityRegisry.MINI_BOMB.get(), level,15*20,shooter);
         this.speed = speed;
         this.damage = damage;
         this.shoot(shooter.getLookAngle());
-        this.expireTime=15*20;
     }
 
     @Override

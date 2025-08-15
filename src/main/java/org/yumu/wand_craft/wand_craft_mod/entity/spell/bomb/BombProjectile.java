@@ -18,12 +18,12 @@ public class BombProjectile extends AbstractMagicProjectile {
         this.expireTime=15*20;
     }
 
-    public BombProjectile(Level level, float speed, float damage, LivingEntity shooter) {
-        super(EntityRegisry.BOMB.get(), level);
+    public BombProjectile(Level level, float speed, float damage, Entity shooter) {
+        super(EntityRegisry.BOMB.get(), level,15*20,shooter);
         this.speed = speed;
         this.damage = damage;
         this.shoot(shooter.getLookAngle());
-        this.expireTime=15*20;
+
     }
 
     @Override

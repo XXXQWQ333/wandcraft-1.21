@@ -166,7 +166,7 @@ public class WandData {
      * 构造一个默认的WandData对象，所有字段初始化为默认值
      */
     public WandData() {
-        this(null,0, null,0,0,false, 0, 0);
+        this(null,0, null,0,0,true, 0, 0);
     }
 
     @Nullable

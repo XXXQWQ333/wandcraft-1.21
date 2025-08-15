@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractEffectSpell;
 import org.yumu.wand_craft.wand_craft_mod.spell.AbstractProjectileSpell;
 
@@ -39,6 +40,7 @@ public abstract class AbstractMagicProjectile extends Projectile {
             setDeltaMovement(currentMotion.normalize().scale(speed));
         }
     }
+
     public void setExpireTime(int expireTime) {
         this.expireTime = expireTime;
     }
@@ -50,9 +52,10 @@ public abstract class AbstractMagicProjectile extends Projectile {
     protected AbstractMagicProjectile(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
     }
-    protected AbstractMagicProjectile(EntityType<? extends Projectile> entityType, Level level,int expireTime) {
+    protected AbstractMagicProjectile(EntityType<? extends Projectile> entityType, Level level,int expireTime,Entity owner) {
         super(entityType, level);
         this.expireTime = expireTime;
+        setOwner( owner);
     }
 
     @Override
